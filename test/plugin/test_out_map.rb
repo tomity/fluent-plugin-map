@@ -117,8 +117,8 @@ class MapOutputTest < Test::Unit::TestCase
   end
 
   def test_config_error_tag
-    time = Time.local(2012, 10, 10, 10, 10, 0)
-    record = {'code' => '300'}
+    _time = Time.local(2012, 10, 10, 10, 10, 0)
+    _record = {'code' => '300'}
 
     #require time
     assert_raise(Fluent::ConfigError){
@@ -130,7 +130,7 @@ class MapOutputTest < Test::Unit::TestCase
   end
 
   def test_config_error_time
-    record = {'code' => '300'}
+    _record = {'code' => '300'}
 
     #require time
     assert_raise(Fluent::ConfigError){
@@ -142,7 +142,7 @@ class MapOutputTest < Test::Unit::TestCase
   end
 
   def test_config_error_record
-    time = Time.local(2012, 10, 10, 10, 10, 0)
+    _time = Time.local(2012, 10, 10, 10, 10, 0)
 
     #require record
     assert_raise(Fluent::ConfigError){
@@ -154,8 +154,8 @@ class MapOutputTest < Test::Unit::TestCase
   end
 
   def test_config_error_multi
-    time = Time.local(2012, 10, 10, 10, 10, 0)
-    record = {'code' => '300'}
+    _time = Time.local(2012, 10, 10, 10, 10, 0)
+    _record = {'code' => '300'}
 
     #require time
     assert_raise(Fluent::ConfigError){

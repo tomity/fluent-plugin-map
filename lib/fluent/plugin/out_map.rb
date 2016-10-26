@@ -106,8 +106,8 @@ module Fluent::Plugin
     def process(tag, es)
       begin
         tag_output_es = do_map(tag, es)
-        tag_output_es.each_pair do |tag, output_es|
-          router.emit_stream(tag, output_es)
+        tag_output_es.each_pair do |output_tag, output_es|
+          router.emit_stream(output_tag, output_es)
         end
         tag_output_es
       rescue SyntaxError => e
@@ -120,12 +120,12 @@ module Fluent::Plugin
       tuples = generate_tuples(tag, es)
 
       tag_output_es = Hash.new{|h, key| h[key] = Fluent::MultiEventStream::new}
-      tuples.each do |tag, time, record|
+      tuples.each do |output_tag, time, record|
         if time == nil || record == nil
           raise SyntaxError.new
         end
-        tag_output_es[tag].add(time, record)
-        $log.trace { [tag, time, record].inspect }
+        tag_output_es[output_tag].add(time, record)
+        $log.trace { [output_tag, time, record].inspect }
       end
       tag_output_es
     end
