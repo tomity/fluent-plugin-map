@@ -11,14 +11,14 @@ module Fluent::Plugin
       define_method("router") { Fluent::Engine }
     end
 
-    config_param :map, :string, :default => nil
-    config_param :tag, :string, :default => nil
-    config_param :key, :string, :default => nil #deprecated
-    config_param :time, :string, :default => nil
-    config_param :record, :string, :default => nil
-    config_param :multi, :bool, :default => false
-    config_param :timeout, :time, :default => 1
-    config_param :format, :string, :default => nil
+    config_param :map, :string, default: nil
+    config_param :tag, :string, default: nil
+    config_param :key, :string, default: nil #deprecated
+    config_param :time, :string, default: nil
+    config_param :record, :string, default: nil
+    config_param :multi, :bool, default: false
+    config_param :timeout, :time, default: 1
+    config_param :format, :string, default: nil
 
     MMAP_MAX_NUM = 50
 
