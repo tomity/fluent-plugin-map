@@ -1,7 +1,10 @@
+require 'fluent/plugin/output'
 
-module Fluent
-  class MapOutput < Fluent::Output
+module Fluent::Plugin
+  class MapOutput < Output
     Fluent::Plugin.register_output('map', self)
+
+    helpers :event_emitter
 
     # Define `router` method of v0.12 to support v0.10 or earlier
     unless method_defined?(:router)
@@ -34,7 +37,7 @@ module Fluent
       elsif (@tag || @key) && @time && @record
         "record"
       else
-        raise ConfigError, "Any of map, 3 parameters(tag, time, and record) or format is required "
+        raise Fluent::ConfigError, "Any of map, 3 parameters(tag, time, and record) or format is required "
       end
     end
 
@@ -44,11 +47,11 @@ module Fluent
         # pass
       when "record"
         @tag ||= @key
-        raise ConfigError, "multi and 3 parameters(tag, time, and record) are not compatible" if @multi
+        raise Fluent::ConfigError, "multi and 3 parameters(tag, time, and record) are not compatible" if @multi
       when "multimap"
         # pass.
       else
-        raise ConfigError, "format #{@format} is invalid."
+        raise Fluent::ConfigError, "format #{@format} is invalid."
       end
     end
 
@@ -100,16 +103,14 @@ module Fluent
     end
 
 
-    def emit(tag, es, chain)
+    def process(tag, es)
       begin
         tag_output_es = do_map(tag, es)
         tag_output_es.each_pair do |tag, output_es|
           router.emit_stream(tag, output_es)
         end
-        chain.next
         tag_output_es
       rescue SyntaxError => e
-        chain.next
         $log.error "map command is syntax error: #{@map}"
         e #for test
       end
@@ -118,7 +119,7 @@ module Fluent
     def do_map(tag, es)
       tuples = generate_tuples(tag, es)
 
-      tag_output_es = Hash.new{|h, key| h[key] = MultiEventStream::new}
+      tag_output_es = Hash.new{|h, key| h[key] = Fluent::MultiEventStream::new}
       tuples.each do |tag, time, record|
         if time == nil || record == nil
           raise SyntaxError.new
